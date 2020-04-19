@@ -56,7 +56,7 @@ public class ParticipantRestController {
 		
 		Participant foundParticipant = participantService.findByLogin(login);
 		if (foundParticipant == null) {
-			return new ResponseEntity("Unable to delete. A participant with login " + login + " does not exist.", HttpStatus.CONFLICT);
+			return new ResponseEntity("Unable to delete! A participant with login " + login + " does not exist.", HttpStatus.CONFLICT);
 		} else {
 			participantService.deleteParticipant(foundParticipant);
 		} 
