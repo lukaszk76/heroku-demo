@@ -24,14 +24,14 @@ public class MeetingRestController {
 	MeetingService meetingService;
 
 	@RequestMapping(value = "", method = RequestMethod.GET)
-	public ResponseEntity<?> getMeeting() {
+	public ResponseEntity<?> getMeetings() {
 		Collection<Meeting> meetings = meetingService.getAll();
 		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
 	}
 	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 
-	public ResponseEntity<?> getMeeting(@PathVariable("id") String meetingID) {
+	public ResponseEntity<?> getMeeting(@PathVariable("id") long meetingID) {
 	    Meeting meeting = meetingService.findByID(meetingID);
 		if (meeting == null) { 
 		return new ResponseEntity(HttpStatus.NOT_FOUND);
