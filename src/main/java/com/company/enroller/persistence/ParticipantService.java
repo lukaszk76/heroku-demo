@@ -36,7 +36,7 @@ public class ParticipantService {
 		transaction.commit();		
 	}
 	
-public void deleteParticipant(Participant participant) {
+	public void deleteParticipant(Participant participant) {
 		
 		Transaction transaction = this.session.beginTransaction();
 	
@@ -44,9 +44,8 @@ public void deleteParticipant(Participant participant) {
 		transaction.commit();		
 	}
 
-
-public void updateParticipant(Participant participant) {
-		
+	public void updateParticipant(Participant participant) {
+	//to be completed	
 		Transaction transaction = this.session.beginTransaction();
 	
 		session.update(participant);
