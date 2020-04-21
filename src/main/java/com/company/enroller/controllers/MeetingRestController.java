@@ -45,7 +45,7 @@ public class MeetingRestController {
 		
 		Meeting foundMeeting = meetingService.findByID(meeting.getId());
 		if (foundMeeting != null) {
-			return new ResponseEntity("Unable to create. A meeting with ID " + meeting.getId() + " already exist.", HttpStatus.CONFLICT);
+			return new ResponseEntity("Unable to create. A meeting with ID " + meeting.getId() + " already exists.", HttpStatus.CONFLICT);
 		} else {
 			meetingService.registerMeeting(meeting);	
 		} 
@@ -63,5 +63,43 @@ public class MeetingRestController {
 			meetingService.deleteMeeting(foundMeeting);
 		} 
 		return new ResponseEntity(HttpStatus.OK);
-	} 	
+	}
+	
+	@RequestMapping(value = "/{id}/{login}", method = RequestMethod.POST)
+
+	public ResponseEntity<?> addParticipantToMeeting(@PathVariable("id") long id, @PathVariable String login) {
+		
+		ParticipantService participantService = new ParticipantService();
+		Participant participant = participantService.findByLogin(login);
+		if (participant == null) {
+			return new ResponseEntity("Add the participant " + login + " to the general list of participants first.", HttpStatus.CONFLICT);
+		}
+		
+		
+		Meeting foundMeeting = meetingService.findByID(id);
+		if (foundMeeting == null) {
+			return new ResponseEntity("Unable to add a participant. Meeting with " + id + " does not exist.", HttpStatus.CONFLICT);
+		}
+		
+		for (Participant meetingParticipant: foundMeeting.getParticipants()) {
+			if (meetingParticipant.getLogin().equals(login)){
+				return new ResponseEntity("Unable to add a participant. Participant  " + login + " already added to the meeting.", HttpStatus.CONFLICT);
+			}	
+		} 
+		
+		meetingService.addParticipant(foundMeeting, participant);
+		
+		return new ResponseEntity(HttpStatus.OK);
+	} 
+	
+	@RequestMapping(value = "/{id}/participants", method = RequestMethod.GET)
+	public ResponseEntity<?> getMeetingParticipants(@PathVariable("id") long meetingID) {
+	    
+		Collection<Participant> participants = meetingService.getMeetingParticipants(meetingID);
+		if (participants == null) { 
+		return new ResponseEntity(HttpStatus.NOT_FOUND);
+		} 
+		
+		return new ResponseEntity<Collection<Participant>>(participants, HttpStatus.OK); 
+	}
 }

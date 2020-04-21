@@ -55,4 +55,16 @@ public class MeetingService {
 		session.update(meeting);
 		transaction.commit();		
 	}
+
+	public void addParticipant(Meeting foundMeeting, Participant new_participant) {
+		foundMeeting.addParticipant(new_participant);
+		this.updateMeeting(foundMeeting);
+	}
+
+	public Collection<Participant> getMeetingParticipants(long meetingID) {
+		Meeting meeting = this.findByID(meetingID);
+		Collection<Participant> participants = meeting.getParticipants();
+		return participants;
+	}
+	
 }
