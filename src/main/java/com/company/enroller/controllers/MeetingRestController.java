@@ -51,6 +51,19 @@ public class MeetingRestController {
 		} 
 		return new ResponseEntity(HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "/{id}", method = RequestMethod.PUT) 
+	public ResponseEntity<?> updateMeeting(@PathVariable("id") long id, @RequestBody Meeting meeting){
+		
+		Meeting foundMeeting = meetingService.findByID(id);
+		if (foundMeeting == null) {
+			meetingService.registerMeeting(meeting);
+			return new ResponseEntity("The meeting with ID " + meeting.getId() + " did not exist. The meeting was created instead of updated.", HttpStatus.CONFLICT);
+		} else {
+			meetingService.updateMeeting(id, meeting);	
+		} 
+		return new ResponseEntity(HttpStatus.OK);
+	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 
@@ -67,7 +80,7 @@ public class MeetingRestController {
 	
 	@RequestMapping(value = "/{id}/{login}", method = RequestMethod.POST)
 
-	public ResponseEntity<?> addParticipantToMeeting(@PathVariable("id") long id, @PathVariable String login) {
+	public ResponseEntity<?> addParticipantToMeeting(@PathVariable("id") long id, @PathVariable("login") String login) {
 		
 		ParticipantService participantService = new ParticipantService();
 		Participant participant = participantService.findByLogin(login);
@@ -88,6 +101,32 @@ public class MeetingRestController {
 		} 
 		
 		meetingService.addParticipant(foundMeeting, participant);
+		
+		return new ResponseEntity(HttpStatus.OK);
+	} 
+	
+	@RequestMapping(value = "/{id}/{login}", method = RequestMethod.DELETE)
+	public ResponseEntity<?> removeParticipantFromMeeting(@PathVariable("id") long id, @PathVariable("login") String login) {
+		
+		Meeting foundMeeting = meetingService.findByID(id);
+		if (foundMeeting == null) {
+			return new ResponseEntity("Unable to remove the participant. Meeting with " + id + " does not exist.", HttpStatus.CONFLICT);
+		}
+		
+		Participant foundParticipant = null; 
+		
+		for (Participant meetingParticipant: foundMeeting.getParticipants()) {
+			if (meetingParticipant.getLogin().equals(login)){
+				foundParticipant = meetingParticipant;
+				break;		
+			}	
+		} 
+		
+		if (foundParticipant == null) {
+			return new ResponseEntity("Unable to remove the participant. Participant  " + login + " was not registered to the meeting.", HttpStatus.CONFLICT);
+		}
+		
+		meetingService.removeParticipant(foundMeeting, foundParticipant);
 		
 		return new ResponseEntity(HttpStatus.OK);
 	} 

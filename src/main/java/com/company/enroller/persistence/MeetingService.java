@@ -48,17 +48,32 @@ public class MeetingService {
 	}
 
 
-	public void updateMeeting(Meeting meeting) {
-	//to be completed	
+	public void updateMeeting(long ID, Meeting updated_meeting) {
+		Meeting meeting = this.findByID(ID);
+		meeting.update(updated_meeting);
+		
 		Transaction transaction = this.session.beginTransaction();
+		session.update(meeting);
+		transaction.commit();		
+	}
 	
+	public void updateMeeting(Meeting meeting, Meeting updated_meeting) {
+		meeting.update(updated_meeting);
+		
+		Transaction transaction = this.session.beginTransaction();
 		session.update(meeting);
 		transaction.commit();		
 	}
 
+
 	public void addParticipant(Meeting foundMeeting, Participant new_participant) {
 		foundMeeting.addParticipant(new_participant);
-		this.updateMeeting(foundMeeting);
+		this.updateMeeting(foundMeeting.getId(), foundMeeting);
+	}
+	
+	public void removeParticipant(Meeting foundMeeting, Participant participant) {
+		foundMeeting.removeParticipant(participant);
+		this.updateMeeting(foundMeeting.getId(), foundMeeting);
 	}
 
 	public Collection<Participant> getMeetingParticipants(long meetingID) {

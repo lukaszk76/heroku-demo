@@ -49,6 +49,19 @@ public class ParticipantRestController {
 		} 
 		return new ResponseEntity(HttpStatus.OK);
 	}
+	
+	@RequestMapping(value = "", method = RequestMethod.PUT) 
+	public ResponseEntity<?> updateParticipant(@RequestBody Participant participant){
+		
+		Participant foundParticipant = participantService.findByLogin(participant.getLogin());
+		if (foundParticipant == null) {
+			participantService.registerParticipant(participant);
+			return new ResponseEntity("The participant with login " + participant.getLogin() + " did not exist. The participant is created instead of updated", HttpStatus.OK);
+		} else {
+			participantService.updateParticipant(participant);
+		} 
+		return new ResponseEntity(HttpStatus.OK);
+	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 
