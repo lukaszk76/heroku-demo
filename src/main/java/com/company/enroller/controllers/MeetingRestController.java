@@ -29,6 +29,26 @@ public class MeetingRestController {
 		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK);
 	}
 	
+	@RequestMapping(value = "/SEARCH={substring}", method = RequestMethod.GET)
+	public ResponseEntity<?> searchMeetings(@PathVariable("substring") String substring) {
+	    Collection<Meeting> meetings = meetingService.searchMeetings(substring);
+		if (meetings == null) { 
+		return new ResponseEntity(HttpStatus.NOT_FOUND);
+		} 
+	
+		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK); 
+	}
+	
+	@RequestMapping(value = "/PARTICIPANT={participantID}", method = RequestMethod.GET)
+	public ResponseEntity<?> searchMeetingsByParticipant(@PathVariable("participantID") String participantID) {
+	    Collection<Meeting> meetings = meetingService.searchMeetingsByParticipant(participantID);
+		if (meetings == null) { 
+		return new ResponseEntity(HttpStatus.NOT_FOUND);
+		} 
+	
+		return new ResponseEntity<Collection<Meeting>>(meetings, HttpStatus.OK); 
+	}
+	
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 
 	public ResponseEntity<?> getMeeting(@PathVariable("id") long meetingID) {

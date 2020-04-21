@@ -1,6 +1,9 @@
 package com.company.enroller.persistence;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -24,7 +27,9 @@ public class MeetingService {
 	public Collection<Meeting> getAll() {
 		String hql = "FROM Meeting";
 		Query query = session.createQuery(hql);
-		return query.list();
+		List<Meeting> meetings = query.list();
+		Collections.sort(meetings);
+		return meetings;
 	}
 	
 	public Meeting findByID(long id) {
@@ -81,5 +86,34 @@ public class MeetingService {
 		Collection<Participant> participants = meeting.getParticipants();
 		return participants;
 	}
-	
+
+	public Collection<Meeting> searchMeetings(String substring) {
+		Collection<Meeting> meetings = this.getAll();
+		Collection<Meeting> selectedMeetings = new ArrayList();
+		for (Meeting meeting: meetings) {
+			if (meeting.getTitle().contains(substring) || meeting.getDescription().contains(substring)){
+				selectedMeetings.add(meeting);
+			}
+		}
+		
+		if (selectedMeetings.size() == 0) {
+			return null;
+		}
+		
+		return selectedMeetings;
+	}
+
+	public Collection<Meeting> searchMeetingsByParticipant(String participantID) {
+		Collection<Meeting> meetings = new ArrayList();
+		
+		for (Meeting meeting: this.getAll()) {
+			for (Participant participant: meeting.getParticipants()) {
+				if (participant.getLogin().equals(participantID)) {
+					meetings.add(meeting);
+					break;
+				}
+			}
+		}
+		return meetings;
+	}
 }
