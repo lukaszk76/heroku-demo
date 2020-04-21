@@ -30,4 +30,8 @@ public class Participant {
 	public void setPassword(String password) {
 		this.password = password;
 	}
+	
+	public void update(Participant updated_participant) {
+		this.setPassword(updated_participant.getPassword());
+	}
 }

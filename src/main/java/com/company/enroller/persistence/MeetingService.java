@@ -31,51 +31,49 @@ public class MeetingService {
 		Collections.sort(meetings);
 		return meetings;
 	}
-	
+
 	public Meeting findByID(long id) {
-		return (Meeting)session.get(Meeting.class, id );
+		return (Meeting) session.get(Meeting.class, id);
 	}
 
 	public void registerMeeting(Meeting meeting) {
-		
+
 		Transaction transaction = this.session.beginTransaction();
-	
+
 		session.save(meeting);
-		transaction.commit();		
-	}
-	
-	public void deleteMeeting(Meeting meeting) {
-		
-		Transaction transaction = this.session.beginTransaction();
-	
-		session.delete(meeting);
-		transaction.commit();		
+		transaction.commit();
 	}
 
+	public void deleteMeeting(Meeting meeting) {
+
+		Transaction transaction = this.session.beginTransaction();
+
+		session.delete(meeting);
+		transaction.commit();
+	}
 
 	public void updateMeeting(long ID, Meeting updated_meeting) {
 		Meeting meeting = this.findByID(ID);
 		meeting.update(updated_meeting);
-		
+
 		Transaction transaction = this.session.beginTransaction();
 		session.update(meeting);
-		transaction.commit();		
-	}
-	
-	public void updateMeeting(Meeting meeting, Meeting updated_meeting) {
-		meeting.update(updated_meeting);
-		
-		Transaction transaction = this.session.beginTransaction();
-		session.update(meeting);
-		transaction.commit();		
+		transaction.commit();
 	}
 
+	public void updateMeeting(Meeting meeting, Meeting updated_meeting) {
+		meeting.update(updated_meeting);
+
+		Transaction transaction = this.session.beginTransaction();
+		session.update(meeting);
+		transaction.commit();
+	}
 
 	public void addParticipant(Meeting foundMeeting, Participant new_participant) {
 		foundMeeting.addParticipant(new_participant);
 		this.updateMeeting(foundMeeting.getId(), foundMeeting);
 	}
-	
+
 	public void removeParticipant(Meeting foundMeeting, Participant participant) {
 		foundMeeting.removeParticipant(participant);
 		this.updateMeeting(foundMeeting.getId(), foundMeeting);
@@ -90,24 +88,24 @@ public class MeetingService {
 	public Collection<Meeting> searchMeetings(String substring) {
 		Collection<Meeting> meetings = this.getAll();
 		Collection<Meeting> selectedMeetings = new ArrayList();
-		for (Meeting meeting: meetings) {
-			if (meeting.getTitle().contains(substring) || meeting.getDescription().contains(substring)){
+		for (Meeting meeting : meetings) {
+			if (meeting.getTitle().contains(substring) || meeting.getDescription().contains(substring)) {
 				selectedMeetings.add(meeting);
 			}
 		}
-		
+
 		if (selectedMeetings.size() == 0) {
 			return null;
 		}
-		
+
 		return selectedMeetings;
 	}
 
 	public Collection<Meeting> searchMeetingsByParticipant(String participantID) {
 		Collection<Meeting> meetings = new ArrayList();
-		
-		for (Meeting meeting: this.getAll()) {
-			for (Participant participant: meeting.getParticipants()) {
+
+		for (Meeting meeting : this.getAll()) {
+			for (Participant participant : meeting.getParticipants()) {
 				if (participant.getLogin().equals(participantID)) {
 					meetings.add(meeting);
 					break;

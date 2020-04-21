@@ -79,19 +79,18 @@ public class Meeting implements Comparable<Meeting> {
 	public void removeParticipant(Participant participant) {
 		this.participants.remove(participant);
 	}
-	
 
 	public Collection<Participant> getParticipants() {
 		return participants;
 	}
-	
+
 	public void setParticipants(Collection<Participant> participants) {
 		this.participants = new HashSet<>();
-		for (Participant participant: participants) {
+		for (Participant participant : participants) {
 			this.addParticipant(participant);
 		}
 	}
-	
+
 	public void update(Meeting updated_meeting) {
 		this.setTitle(updated_meeting.getTitle());
 		this.setDescription(updated_meeting.getDescription());
@@ -102,6 +101,5 @@ public class Meeting implements Comparable<Meeting> {
 	public int compareTo(Meeting o) {
 		// TODO Auto-generated method stub
 		return this.getTitle().compareTo(o.getTitle());
-	}
-;
+	};
 }
